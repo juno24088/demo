@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wright Inspires - Intern Task View</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 100%);
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #166534 0%, #064e3b 100%);
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.2);
+        }
+        
+        .header-content {
+            position: relative;
+            z-index: 10;
+            padding: 3rem 0;
+        }
+        
+        .header h1 {
+            font-size: 3rem;
+            font-weight: bold;
+            margin-bottom: 1rem;
+            color: #dcfce7;
+        }
+        
+        .header p {
+            font-size: 1.25rem;
+            margin-bottom: 0.5rem;
+            color: #bbf7d0;
+        }
+        
+        .header .tagline {
+            color: #a7f3d0;
+            font-style: italic;
+        }
+        
+        .header-decoration-1 {
+            position: absolute;
+            bottom: -1.5rem;
+            right: -1.5rem;
+            width: 8rem;
+            height: 8rem;
+            background: #10b981;
+            border-radius: 50%;
+            opacity: 0.2;
+        }
+        
+        .header-decoration-2 {
+            position: absolute;
+            top: -1rem;
+            left: -1rem;
+            width: 6rem;
+            height: 6rem;
+            background: #059669;
+            border-radius: 50%;
+            opacity: 0.15;
+        }
+        
+        .controls {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin: 2rem 0;
+            gap: 1rem;
+        }
+        
+        .filter-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+        
+        .filter-btn {
+            padding: 0.5rem 1rem;
+            border-radius: 9999px;
+            font-weight: 500;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .filter-btn.active {
+            background: #10b981;
+            color: white;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+        
+        .filter-btn:not(.active) {
+            background: white;
+            color: #15803d;
+            border: 1px solid #16a34a;
+        }
+        
+        .filter-btn:not(.active):hover {
+            background: #f0fdf4;
+        }
+        
+        .task-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+        
+        .task-card {
+            background: white;
+            border-radius: 1rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            border: 1px solid #16a34a;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .task-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+        
+        .task-content {
+            padding: 1.5rem;
+        }
+        
+        .task-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+        }
+        
+        .task-title {
+            font-size: 1.125rem;
+            font-weight: bold;
+            color: #166534;
+            flex: 1;
+        }
+        
+        .task-description {
+            color: #059669;
+            margin-bottom: 1rem;
+            font-size: 0.875rem;
+            line-height: 1.5;
+        }
+        
+        .task-tags {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+        }
+        
+        .tag {
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+        
+        .tag.project {
+            background: #d1fae5;
+            color: #065f46;
+        }
+        
+        .tag.category {
+            background: #dcfce7;
+            color: #15803d;
+        }
+        
+        .task-details {
+            margin-bottom: 1rem;
+        }
+        
+        .task-detail {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+            font-size: 0.875rem;
+        }
+        
+        .task-detail .label {
+            color: #059669;
+        }
+        
+        .task-detail .value {
+            color: #15803d;
+            font-weight: 500;
+        }
+        
+        .due-date {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+        }
+        
+        .due-date .date {
+            font-weight: 500;
+        }
+        
+        .due-date .days-left {
+            font-size: 0.75rem;
+            margin-top: 0.125rem;
+        }
+        
+        .due-date .overdue {
+            color: #dc2626;
+        }
+        
+        .due-date .due-soon {
+            color: #ea580c;
+        }
+        
+        .due-date .due-later {
+            color: #059669;
+        }
+        
+        .task-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .status-indicator {
+            font-size: 0.875rem;
+            color: #15803d;
+        }
+        
+        .priority-badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: bold;
+            color: white;
+        }
+        
+        .status-bar {
+            height: 0.25rem;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 4rem 0;
+        }
+        
+        .empty-state .icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+        }
+        
+        .empty-state h3 {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #15803d;
+            margin-bottom: 0.5rem;
+        }
+        
+        .empty-state p {
+            color: #059669;
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        .auth-warning {
+            background: #fef2f2;
+            color: #dc2626;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 0.5rem;
+            text-align: center;
+            font-weight: 500;
+        }
+        
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .controls {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .filter-buttons {
+                justify-content: center;
+            }
+            
+            .task-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .task-tags {
+                flex-wrap: wrap;
+            }
+        }
+    </style>
+</head>
+<body>
+    <script>
+        // Warning for direct access without valid credentials
+        const params = new URLSearchParams(window.location.search);
+        const username = params.get('username');
+        const password = params.get('password');
+        const validUsername = 'intern';
+        const validPassword = '87654321';
+
+        if (!username || !password || username !== validUsername || password !== validPassword) {
+            const warning = document.createElement('div');
+            warning.className = 'auth-warning';
+            warning.textContent = 'Warning: Accessed without valid intern credentials. Please use the login page for secure access.';
+            document.body.insertBefore(warning, document.body.firstChild);
+        }
+    </script>
+
+    <div class="header">
+        <div class="header-decoration-1"></div>
+        <div class="header-decoration-2"></div>
+        <div class="container">
+            <div class="header-content">
+                <h1>Wright Inspires</h1>
+                <p>Intern Task View</p>
+                <div class="tagline">Creating spaces that blend aesthetics with nature</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- Controls -->
+        <div class="controls">
+            <div class="filter-buttons" id="filterButtons">
+                <button class="filter-btn active" data-filter="all">All Tasks</button>
+                <button class="filter-btn" data-filter="pending">Pending</button>
+                <button class="filter-btn" data-filter="in-progress">In Progress</button>
+                <button class="filter-btn" data-filter="completed">Completed</button>
+            </div>
+        </div>
+
+        <!-- Task Grid -->
+        <div id="taskGrid" class="task-grid">
+            <!-- Tasks will be populated here -->
+        </div>
+
+        <!-- Empty State -->
+        <div id="emptyState" class="empty-state hidden">
+            <div class="icon">🌱</div>
+            <h3>No tasks found</h3>
+            <p>No tasks are currently available in this category</p>
+        </div>
+    </div>
+
+    <script>
+        class TaskManager {
+            constructor(isIntern = true) {
+                this.tasks = [
+                    {
+                        id: 1,
+                        title: "Ambara House - Final Drawings",
+                        description: "Complete architectural drawings for eco-responsive farmhouse project",
+                        priority: "high",
+                        status: "in-progress",
+                        assignee: "Ar. Prathima Seethur",
+                        dueDate: "2025-07-25",
+                        category: "Design",
+                        project: "Ambara House"
+                    },
+                    {
+                        id: 2,
+                        title: "Material Sourcing - Reclaimed Wood",
+                        description: "Source sustainable reclaimed wood for Symphony of Elements project",
+                        priority: "medium",
+                        status: "pending",
+                        assignee: "Materials Team",
+                        dueDate: "2025-07-30",
+                        category: "Procurement",
+                        project: "Symphony of Elements"
+                    },
+                    {
+                        id: 3,
+                        title: "Site Visit - Kota Stone Installation",
+                        description: "Supervise installation of Kota stone flooring and ensure eco-compliance",
+                        priority: "high",
+                        status: "completed",
+                        assignee: "Site Engineer",
+                        dueDate: "2025-07-18",
+                        category: "Construction",
+                        project: "Eco Villa"
+                    }
+                ];
+                
+                this.currentFilter = 'all';
+                this.isIntern = isIntern;
+                
+                this.init();
+            }
+            
+            init() {
+                this.bindEvents();
+                this.render();
+            }
+            
+            bindEvents() {
+                // Filter buttons
+                document.getElementById('filterButtons').addEventListener('click', (e) => {
+                    if (e.target.dataset.filter) {
+                        this.setFilter(e.target.dataset.filter);
+                    }
+                });
+            }
+            
+            setFilter(filter) {
+                this.currentFilter = filter;
+                
+                // Update button styles
+                document.querySelectorAll('.filter-btn').forEach(btn => {
+                    if (btn.dataset.filter === filter) {
+                        btn.className = 'filter-btn active';
+                    } else {
+                        btn.className = 'filter-btn';
+                    }
+                });
+                
+                this.render();
+            }
+            
+            getPriorityColor(priority) {
+                switch(priority) {
+                    case 'high': return '#c2410c';
+                    case 'medium': return '#eab308';
+                    case 'low': return '#65a30d';
+                    default: return '#6b7280';
+                }
+            }
+            
+            getStatusColor(status) {
+                switch(status) {
+                    case 'completed': return '#059669';
+                    case 'in-progress': return '#0891b2';
+                    case 'pending': return '#dc2626';
+                    default: return '#6b7280';
+                }
+            }
+            
+            getFilteredTasks() {
+                if (this.currentFilter === 'all') {
+                    return this.tasks;
+                }
+                return this.tasks.filter(task => task.status === this.currentFilter);
+            }
+            
+            formatDate(dateString) {
+                if (!dateString) return { date: '', daysLeft: '', class: '' };
+                
+                const dueDate = new Date(dateString);
+                const today = new Date();
+                today.setHours(0, 0, 0, 0);
+                dueDate.setHours(0, 0, 0, 0);
+                
+                const diffTime = dueDate.getTime() - today.getTime();
+                const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+                
+                const formattedDate = dueDate.toLocaleDateString();
+                
+                let daysText = '';
+                let cssClass = '';
+                
+                if (diffDays < 0) {
+                    daysText = `${Math.abs(diffDays)} day${Math.abs(diffDays) !== 1 ? 's' : ''} overdue`;
+                    cssClass = 'overdue';
+                } else if (diffDays === 0) {
+                    daysText = 'Due today';
+                    cssClass = 'due-soon';
+                } else if (diffDays === 1) {
+                    daysText = 'Due tomorrow';
+                    cssClass = 'due-soon';
+                } else if (diffDays <= 7) {
+                    daysText = `Due in ${diffDays} days`;
+                    cssClass = 'due-soon';
+                } else {
+                    daysText = `Due in ${diffDays} days`;
+                    cssClass = 'due-later';
+                }
+                
+                return { date: formattedDate, daysLeft: daysText, class: cssClass };
+            }
+            
+            render() {
+                const filteredTasks = this.getFilteredTasks();
+                const taskGrid = document.getElementById('taskGrid');
+                const emptyState = document.getElementById('emptyState');
+                
+                if (filteredTasks.length === 0) {
+                    taskGrid.innerHTML = '';
+                    emptyState.classList.remove('hidden');
+                    return;
+                }
+                
+                emptyState.classList.add('hidden');
+                
+                taskGrid.innerHTML = filteredTasks.map(task => {
+                    const dateInfo = this.formatDate(task.dueDate);
+                    
+                    return `
+                        <div class="task-card">
+                            <div class="task-content">
+                                <div class="task-header">
+                                    <h3 class="task-title">${task.title}</h3>
+                                </div>
+                                
+                                <p class="task-description">${task.description}</p>
+                                
+                                <div class="task-tags">
+                                    ${task.project ? `<span class="tag project">${task.project}</span>` : ''}
+                                    <span class="tag category">${task.category}</span>
+                                </div>
+                                
+                                <div class="task-details">
+                                    <div class="task-detail">
+                                        <span class="label">Assignee:</span>
+                                        <span class="value">${task.assignee}</span>
+                                    </div>
+                                    <div class="task-detail">
+                                        <span class="label">Due:</span>
+                                        <div class="due-date">
+                                            <span class="date">${dateInfo.date}</span>
+                                            <span class="days-left ${dateInfo.class}">${dateInfo.daysLeft}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="task-actions">
+                                    <span class="status-indicator">${task.status === 'completed' ? '✅ Completed' : '☐ ' + task.status}</span>
+                                    <span class="priority-badge" style="background-color: ${this.getPriorityColor(task.priority)}">
+                                        ${task.priority}
+                                    </span>
+                                </div>
+                            </div>
+                            
+                            <div class="status-bar" style="background-color: ${this.getStatusColor(task.status)}"></div>
+                        </div>
+                    `;
+                }).join('');
+            }
+        }
+        
+        let taskManager;
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', function() {
+                taskManager = new TaskManager(true);
+            });
+        } else {
+            taskManager = new TaskManager(true);
+        }
+    </script>
+</body>
+</html>
