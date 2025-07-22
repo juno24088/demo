@@ -184,14 +184,6 @@
             box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
         }
         
-        .form-checkbox {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            font-size: 1rem;
-            color: #059669;
-        }
-        
         .form-buttons {
             display: flex;
             gap: 0.75rem;
@@ -462,7 +454,7 @@
 </head>
 <body>
     <script>
-        // Warning for direct access without valid credentials
+        // Optional warning for demo if accessed without credentials
         const params = new URLSearchParams(window.location.search);
         const username = params.get('username');
         const password = params.get('password');
@@ -536,13 +528,6 @@
                 <input type="date" id="taskDueDate" class="form-input">
             </div>
             
-            <div class="form-grid">
-                <label class="form-checkbox">
-                    <input type="checkbox" id="taskAssignedToIntern">
-                    Assign to Intern
-                </label>
-            </div>
-            
             <div class="form-buttons">
                 <button id="saveTaskBtn" class="btn-primary">Create Task</button>
                 <button id="cancelTaskBtn" class="btn-secondary">Cancel</button>
@@ -564,7 +549,7 @@
 
     <script>
         class TaskManager {
-            constructor(isIntern = false) {
+            constructor() {
                 this.tasks = [
                     {
                         id: 1,
@@ -575,8 +560,7 @@
                         assignee: "Ar. Prathima Seethur",
                         dueDate: "2025-07-25",
                         category: "Design",
-                        project: "Ambara House",
-                        assignedToIntern: false
+                        project: "Ambara House"
                     },
                     {
                         id: 2,
@@ -584,11 +568,21 @@
                         description: "Source sustainable reclaimed wood for Symphony of Elements project",
                         priority: "medium",
                         status: "pending",
-                        assignee: "Materials Team",
+                        assignee: "Intern",
                         dueDate: "2025-07-30",
                         category: "Procurement",
-                        project: "Symphony of Elements",
-                        assignedToIntern: true
+                        project: "Symphony of Elements"
+                    },
+                       {
+                        id: 3,
+                        title: "Meeting-Client Requirements",
+                        description: "Take minutes of meeting",
+                        priority: "medium",
+                        status: "pending",
+                        assignee: "Intern",
+                        dueDate: "2025-07-24",
+                        category: "Procurement",
+                        project: "Sangeeta Karthikeyan"
                     },
                     {
                         id: 3,
@@ -596,18 +590,16 @@
                         description: "Supervise installation of Kota stone flooring and ensure compliance with procedures",
                         priority: "high",
                         status: "completed",
-                        assignee: "Civil Engineer",
+                        assignee: "Site Engineer",
                         dueDate: "2025-07-18",
                         category: "Construction",
-                        project: "Eco Villa",
-                        assignedToIntern: false
+                        project: "Farmhouse"
                     }
                 ];
                 
                 this.currentFilter = 'all';
                 this.nextId = 4;
                 this.editingTaskId = null;
-                this.isIntern = isIntern;
                 
                 this.init();
             }
@@ -625,21 +617,19 @@
                     }
                 });
                 
-                if (!this.isIntern) {
-                    // Add task button
-                    document.getElementById('addTaskBtn').addEventListener('click', () => {
-                        this.showAddForm();
-                    });
-                    
-                    // Form buttons
-                    document.getElementById('saveTaskBtn').addEventListener('click', () => {
-                        this.saveTask();
-                    });
-                    
-                    document.getElementById('cancelTaskBtn').addEventListener('click', () => {
-                        this.hideForm();
-                    });
-                }
+                // Add task button
+                document.getElementById('addTaskBtn').addEventListener('click', () => {
+                    this.showAddForm();
+                });
+                
+                // Form buttons
+                document.getElementById('saveTaskBtn').addEventListener('click', () => {
+                    this.saveTask();
+                });
+                
+                document.getElementById('cancelTaskBtn').addEventListener('click', () => {
+                    this.hideForm();
+                });
             }
             
             setFilter(filter) {
@@ -682,7 +672,6 @@
                 document.getElementById('taskCategory').value = task.category;
                 document.getElementById('taskAssignee').value = task.assignee;
                 document.getElementById('taskDueDate').value = task.dueDate;
-                document.getElementById('taskAssignedToIntern').checked = task.assignedToIntern || false;
                 
                 document.getElementById('taskForm').classList.remove('hidden');
             }
@@ -700,7 +689,6 @@
                 document.getElementById('taskCategory').value = 'Design';
                 document.getElementById('taskAssignee').value = '';
                 document.getElementById('taskDueDate').value = '';
-                document.getElementById('taskAssignedToIntern').checked = false;
             }
             
             saveTask() {
@@ -719,8 +707,7 @@
                     assignee: assignee,
                     dueDate: document.getElementById('taskDueDate').value,
                     category: document.getElementById('taskCategory').value,
-                    project: document.getElementById('taskProject').value.trim(),
-                    assignedToIntern: document.getElementById('taskAssignedToIntern').checked
+                    project: document.getElementById('taskProject').value.trim()
                 };
                 
                 if (this.editingTaskId) {
@@ -840,12 +827,10 @@
                             <div class="task-content">
                                 <div class="task-header">
                                     <h3 class="task-title">${task.title}</h3>
-                                    ${this.isIntern ? '' : `
-                                        <div class="task-actions-header">
-                                            <button onclick="taskManager.showEditForm(${task.id})" class="edit-btn" title="Edit task">✏️</button>
-                                            <button onclick="taskManager.deleteTask(${task.id})" class="delete-btn" title="Delete task">🗑️</button>
-                                        </div>
-                                    `}
+                                    <div class="task-actions-header">
+                                        <button onclick="taskManager.showEditForm(${task.id})" class="edit-btn" title="Edit task">✏️</button>
+                                        <button onclick="taskManager.deleteTask(${task.id})" class="delete-btn" title="Delete task">🗑️</button>
+                                    </div>
                                 </div>
                                 
                                 <p class="task-description">${task.description}</p>
@@ -853,7 +838,6 @@
                                 <div class="task-tags">
                                     ${task.project ? `<span class="tag project">${task.project}</span>` : ''}
                                     <span class="tag category">${task.category}</span>
-                                    ${task.assignedToIntern ? `<span class="tag intern">Intern Task</span>` : ''}
                                 </div>
                                 
                                 <div class="task-details">
@@ -871,15 +855,11 @@
                                 </div>
                                 
                                 <div class="task-actions">
-                                    ${this.isIntern ? `
-                                        <span class="status-indicator">${task.status === 'completed' ? '✅ Completed' : '☐ ' + task.status}</span>
-                                    ` : `
-                                        <select onchange="taskManager.updateTaskStatus(${task.id}, this.value)" class="status-select">
-                                            <option value="pending" ${task.status === 'pending' ? 'selected' : ''}>Pending</option>
-                                            <option value="in-progress" ${task.status === 'in-progress' ? 'selected' : ''}>In Progress</option>
-                                            <option value="completed" ${task.status === 'completed' ? 'selected' : ''}>Completed</option>
-                                        </select>
-                                    `}
+                                    <select onchange="taskManager.updateTaskStatus(${task.id}, this.value)" class="status-select">
+                                        <option value="pending" ${task.status === 'pending' ? 'selected' : ''}>Pending</option>
+                                        <option value="in-progress" ${task.status === 'in-progress' ? 'selected' : ''}>In Progress</option>
+                                        <option value="completed" ${task.status === 'completed' ? 'selected' : ''}>Completed</option>
+                                    </select>
                                     
                                     <span class="priority-badge" style="background-color: ${this.getPriorityColor(task.priority)}">
                                         ${task.priority}
@@ -904,4 +884,4 @@
         }
     </script>
 </body>
-</html>
+</html> 
