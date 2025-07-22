@@ -195,11 +195,6 @@
             color: #15803d;
         }
         
-        .tag.intern {
-            background: #ecfdf5;
-            color: #166534;
-        }
-        
         .task-details {
             margin-bottom: 1rem;
         }
@@ -377,8 +372,8 @@
         <!-- Empty State -->
         <div id="emptyState" class="empty-state hidden">
             <div class="icon">🌱</div>
-            <h3>No tasks assigned</h3>
-            <p>No tasks are currently assigned to interns in this category</p>
+            <h3>No tasks found</h3>
+            <p>No tasks are currently available in this category</p>
         </div>
     </div>
 
@@ -387,19 +382,8 @@
             constructor(isIntern = true) {
                 this.tasks = [
                     {
+                      
                         id: 1,
-                        title: "Ambara House - Final Drawings",
-                        description: "Complete architectural drawings for eco-responsive farmhouse project",
-                        priority: "high",
-                        status: "in-progress",
-                        assignee: "Ar. Prathima Seethur",
-                        dueDate: "2025-07-25",
-                        category: "Design",
-                        project: "Ambara House",
-                        assignedToIntern: false
-                    },
-                    {
-                        id: 2,
                         title: "Material Sourcing - Reclaimed Wood",
                         description: "Source sustainable reclaimed wood for Symphony of Elements project",
                         priority: "medium",
@@ -407,22 +391,20 @@
                         assignee: "intern",
                         dueDate: "2025-07-30",
                         category: "Procurement",
-                        project: "Symphony of Elements",
-                        assignedToIntern: true
-                    }, 
+                        project: "Symphony of Elements"
+                    },
                     {
-                        id: 3,
-                        title: "Site Visit - Kota Stone Installation",
-                        description: "Supervise installation of Kota stone flooring and ensure eco-compliance",
-                        priority: "high",
-                        status: "completed",
-                        assignee: "Site Engineer",
-                        dueDate: "2025-07-18",
-                        category: "Construction",
-                        project: "Sangeeta Karthikeyan",
-                        assignedToIntern: true
+                    id: 2,
+                        title: "Meeting-Client Requirements",
+                        description: "Take minutes of the meeting",
+                        priority: "medium",
+                        status: "pending",
+                        assignee: "intern",
+                        dueDate: "2025-07-24",
+                        category: "Procurement",
+                        project: "Sangeeta Karthikeyan"
                     }, 
-
+                
                 ];
                 
                 this.currentFilter = 'all';
@@ -479,14 +461,10 @@
             }
             
             getFilteredTasks() {
-                let tasks = this.isIntern
-                    ? this.tasks.filter(task => task.assignedToIntern)
-                    : this.tasks;
-                
                 if (this.currentFilter === 'all') {
-                    return tasks;
+                    return this.tasks;
                 }
-                return tasks.filter(task => task.status === this.currentFilter);
+                return this.tasks.filter(task => task.status === this.currentFilter);
             }
             
             formatDate(dateString) {
@@ -553,7 +531,6 @@
                                 <div class="task-tags">
                                     ${task.project ? `<span class="tag project">${task.project}</span>` : ''}
                                     <span class="tag category">${task.category}</span>
-                                    ${task.assignedToIntern ? `<span class="tag intern">Intern Task</span>` : ''}
                                 </div>
                                 
                                 <div class="task-details">
